@@ -55,11 +55,11 @@ API Endpoints
 
  Method  Endpoint            Description              
 
- GET     /tasks/             Retrieve all tasks       
- POST    /tasks/create       Create a new task        
- GET     /tasks/<int:pk>     Get task details         
- PUT     /tasks/<int:pk>     Update a task            
- DELETE  /tasks/<int:pk>     Delete a task            
+ GET     api/tasks/             Retrieve all tasks       
+ POST    api/tasks/create       Create a new task        
+ GET     api/tasks/<int:pk>     Get task details         
+ PUT     api/tasks/<int:pk>     Update a task            
+ DELETE  api/tasks/<int:pk>     Delete a task            
 
 
 

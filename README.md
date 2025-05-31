@@ -2,6 +2,7 @@
 Task Management API
 
 A simple Django-based RESTful API for managing tasks. It allows users to create tasks, retrieve all tasks, and manage individual task details including updates and deletions.
+Example task data is already preloaded into the database, and also available in example-data.json for reference or reuse.
 
 
 Features

@@ -4,6 +4,8 @@ from rest_framework import status
 from .models import Task
 from .serializer import TaskSerializer
 import datetime
+import re
+from collections import defaultdict
 
 
 @api_view(['GET'])
@@ -65,6 +67,49 @@ def task_detail(request, pk):
     elif request.method == 'DELETE':
         task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def smart_task_suggestions(request):
+
+    def tokenize(text):
+        words = re.findall(r'\b\w+\b', text.lower())
+        stopwords = {'the', 'and', 'of', 'to', 'a', 'for', 'in', 'on'}
+        return [w for w in words if w not in stopwords]
+
+    tasks = Task.objects.all()
+    completed_tasks = tasks.filter(status='completed')
+    pending_tasks = tasks.exclude(status='completed')
+
+    #Example keywords for follow-up mapping
+    keyword_suggestions = {
+        'review': ['Follow-up Meeting', 'Finalization'],
+        'design': ['Client Feedback Session'],
+        'feedback': ['Revise Based on Feedback'],
+        'report': ['Submit Report Summary'],
+        'testing': ['Write Unit Tests', 'Fix Bugs'],
+        'documentation': ['Update Docs', 'Create Release Notes'],
+        'kickoff': ['Setup Project Board', 'Assign Roles'],
+    }
+
+    # Generate suggestions
+    suggestions = []
+    for task in pending_tasks:
+        tokens = tokenize(task.title + ' ' + task.description)
+        task_suggestions = []
+
+        for token in tokens:
+            if token in keyword_suggestions:
+                task_suggestions.extend(keyword_suggestions[token])
+
+        suggestions.append({
+            'task_id': task.id,
+            'task_title': task.title,
+            'suggestions': task_suggestions
+        })
+
+    return Response(suggestions)
+
+
 
 
 

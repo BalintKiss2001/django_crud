@@ -12,6 +12,7 @@ Features
 - View, update, or delete individual tasks
 - Status tracking (Pending, In Progress, Completed)
 - Filtering and sorting by status, due date, and more
+- Smart task suggestion for incomplete tasks
 
 
 Tech Stack
@@ -60,7 +61,8 @@ API Endpoints
  POST    api/tasks/create       Create a new task        
  GET     api/tasks/<int:pk>     Get task details         
  PUT     api/tasks/<int:pk>     Update a task            
- DELETE  api/tasks/<int:pk>     Delete a task            
+ DELETE  api/tasks/<int:pk>     Delete a task
+ GET     api/smart-suggestions  Smart task suggestion for pending tasks           
 
 
 
@@ -95,3 +97,41 @@ Get all "in progress" tasks sorted by due date ascending:
 
 GET /tasks/?status=in_progress&ordering=due_date
 
+Smart Task Suggestions
+
+The system analyzes the title and description of incomplete tasks and suggests follow-up tasks using common keywords. Suggestions are derived from frequently observed patterns in completed tasks.
+
+For example:
+- A task titled "API Review" may suggest:
+  - "Follow-up Meeting"
+  - "Generate API Docs"
+- A task titled "Client Feedback Analysis" may suggest:
+  - "Revise Based on Feedback"
+
+Endpoint
+
+GET `api/smart-suggestions/`  
+Returns a list of incomplete tasks with their recommended follow-up actions.
+
+Response Example
+
+json:
+[
+  {
+    "task_id": 12,
+    "task_title": "Client Feedback Analysis",
+    "status": "in_progress",
+    "suggestions": [
+      "Revise Based on Feedback"
+    ]
+  },
+  {
+    "task_id": 13,
+    "task_title": "API Review",
+    "status": "pending",
+    "suggestions": [
+      "Follow-up Meeting",
+      "Generate API Docs"
+    ]
+  }
+]
